@@ -12,7 +12,7 @@ interface UpcomingProductsListProps {
   upcomingProducts: UpcomingProduct[];
 }
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 5;
 
 const UpcomingProductsList: React.FC<UpcomingProductsListProps> = ({ upcomingProducts }) => {
   const [currentPage, setCurrentPage] = useState(1);

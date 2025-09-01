@@ -14,7 +14,7 @@ export default function Header() {
       </div>
       <nav>
         <ul className="flex space-x-4">
-          <li>
+          {/* <li>
             <Link href="/wholesale" className="hover:underline">
               Wholesale
             </Link>
@@ -23,7 +23,7 @@ export default function Header() {
             <Link href="/retail" className="hover:underline">
               Retail
             </Link>
-          </li>
+          </li> */}
           <li>
             <Link href="/dashboard" className="hover:underline">
               Dashboard
@@ -34,11 +34,11 @@ export default function Header() {
               Office
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link href="/about" className="hover:underline">
               About
             </Link>
-          </li>
+          </li> */}
         </ul>
       </nav>
     </header>
