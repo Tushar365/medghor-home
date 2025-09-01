@@ -4,6 +4,17 @@ import CurrentProductsList from './CurrentProductsList';
 import UpcomingProductsList from './UpcomingProductsList';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+const now: Date = new Date();
+const indianTime: Date = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+
+const day: string = String(indianTime.getDate()).padStart(2, '0');
+const month: string = String(indianTime.getMonth() + 1).padStart(2, '0');
+const year: number = indianTime.getFullYear();
+const hours: number = indianTime.getHours();
+const minutes: string = String(indianTime.getMinutes()).padStart(2, '0');
+const ampm: string = hours >= 12 ? 'PM' : 'AM';
+const hours12: string = String(hours % 12 || 12).padStart(2, '0');
+
 
 interface Product {
   _id: string;
@@ -58,7 +69,8 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
       headStyles: { fillColor: [255, 165, 0] }, // Orange color
     });
 
-    doc.save('products_summary.pdf');
+    doc.save(`medghor_product_summary(${day}-${month}-${year},${hours12},${minutes}(${ampm})).pdf`);
+    console.log(`medghor_product_summary(${day}-${month}-${year},${hours12},${minutes}(${ampm})).pdf`);
   };
 
   return (
