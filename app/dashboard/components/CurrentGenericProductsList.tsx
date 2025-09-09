@@ -1,26 +1,26 @@
-// app/dashboard/components/CurrentProductsList.tsx
+// app/dashboard/components/CurrentGenericProductsList.tsx
 import React, { useState } from 'react';
 import { Package, ChevronLeft, ChevronRight } from 'lucide-react';
 
-interface Product {
+interface genericProducts {
   _id: string;
   name: string;
   _creationTime: number;
 }
 
-interface CurrentProductsListProps {
-  products: Product[];
+interface CurrentGenericProductsListProps {
+  genericproducts: genericProducts[];
 }
 
 const ITEMS_PER_PAGE = 5;
 
-const CurrentProductsList: React.FC<CurrentProductsListProps> = ({ products }) => {
+const CurrentGenericProductsList: React.FC<CurrentGenericProductsListProps> = ({ genericproducts }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
-  const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(genericproducts.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentProducts = products.slice(startIndex, endIndex);
+  const genericProducts = genericproducts.slice(startIndex, endIndex);
 
   const formatDate = (timestamp: number): string => {
     return new Date(timestamp).toLocaleDateString('en-US', {
@@ -45,32 +45,32 @@ const CurrentProductsList: React.FC<CurrentProductsListProps> = ({ products }) =
   return (
     <div className="bg-green-50 border-2 sm:border-4 border-green-700 rounded-lg shadow-lg relative">
       <div className="absolute -top-2 sm:-top-3 left-3 sm:left-6 bg-green-700 text-white px-2 sm:px-4 py-0.5 sm:py-1 rounded text-xs sm:text-sm font-bold">
-        ★ AVAILABLE OFFICE PRODUCTS ★
+        ★ AVAILABLE GENERIC PRODUCTS ★
       </div>
       <div className="p-3 sm:p-6 pt-4 sm:pt-8">
         <div className="text-center mb-4 sm:mb-6">
           <Package className="h-8 sm:h-12 w-8 sm:w-12 text-green-700 mx-auto mb-1 sm:mb-2" />
           <h3 className="text-lg sm:text-2xl font-bold text-green-800 font-serif">CURRENT INVENTORY</h3>
           <div className="w-12 sm:w-16 h-0.5 bg-green-700 mx-auto mt-1 sm:mt-2"></div>
-          {products.length > 0 && (
+          {genericproducts.length > 0 && (
             <p className="text-green-700 text-xs sm:text-sm font-serif mt-2">
-              Showing {startIndex + 1} - {Math.min(endIndex, products.length)} of {products.length} medicines
+              Showing {startIndex + 1} - {Math.min(endIndex, genericproducts.length)} of {genericproducts.length} medicines
             </p>
           )}
         </div>
         
-        {products && products.length > 0 ? (
+        {genericproducts && genericproducts.length > 0 ? (
           <>
             <div className="space-y-2 sm:space-y-3 mb-4">
-              {currentProducts.map((product, index) => (
-                <div key={product._id} className="bg-white border-2 border-green-200 rounded p-3 sm:p-4 shadow-sm">
+              {genericProducts.map((genericproduct, index) => (
+                <div key={genericproduct._id} className="bg-white border-2 border-green-200 rounded p-3 sm:p-4 shadow-sm">
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                     <div className="flex-1">
                       <div className="font-bold text-green-900 text-sm sm:text-lg font-serif break-words">
-                        {startIndex + index + 1}. {product.name.toUpperCase()}
+                        {startIndex + index + 1}. {genericproduct.name.toUpperCase()}
                       </div>
                       <div className="text-green-700 text-xs sm:text-sm font-serif">
-                        Stocked: {formatDate(product._creationTime)}
+                        Stocked: {formatDate(genericproduct._creationTime)}
                       </div>
                     </div>
                     <div className="bg-green-100 border border-green-300 px-2 sm:px-3 py-1 rounded-full self-start sm:self-auto">
@@ -130,4 +130,4 @@ const CurrentProductsList: React.FC<CurrentProductsListProps> = ({ products }) =
   );
 };
 
-export default CurrentProductsList;
+export default CurrentGenericProductsList;
