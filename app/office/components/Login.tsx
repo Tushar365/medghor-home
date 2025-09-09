@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Lock, User } from 'lucide-react';
+import { Lock, User, Eye, EyeOff } from 'lucide-react';
 
 interface LoginProps {
-    onLoginAction: (success: boolean) => void;
+  onLoginAction: (success: boolean) => void;
 }
 
 export default function Login({ onLoginAction }: LoginProps) {
@@ -12,13 +12,14 @@ export default function Login({ onLoginAction }: LoginProps) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
 
-    // Simple authentication (replace with your actual auth logic)
+    // Simple authentication
     if (username === 'admin2025' && password === 'Medghor@2025') {
       setTimeout(() => {
         onLoginAction(true);
@@ -64,13 +65,20 @@ export default function Login({ onLoginAction }: LoginProps) {
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter password"
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
             </div>
           </div>
 
@@ -94,7 +102,7 @@ export default function Login({ onLoginAction }: LoginProps) {
         </form>
 
         <div className="mt-6 text-center text-sm text-gray-500">
-          Demo credentials: admin / password123
+          Demo credentials: admin2025 / Medghor@2025
         </div>
       </div>
     </div>

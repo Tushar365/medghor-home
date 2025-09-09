@@ -11,6 +11,8 @@ import ContactFooter from './components/ContactFooter';
 const MedghorAnnounceBoard = () => {
   const products = useQuery(api.inventory.listProducts);
   const upcomingProducts = useQuery(api.inventory.listUpcomingProducts);
+  const genericProducts = useQuery(api.inventory.listGenericProducts);
+  const upcomingGenericProducts = useQuery(api.inventory.listUpcomingGenericProducts);
 
   const isLoading = products === undefined || upcomingProducts === undefined;
 
@@ -32,10 +34,14 @@ const MedghorAnnounceBoard = () => {
         <InventorySummary 
           currentStock={products?.length || 0}
           incomingItems={upcomingProducts?.length || 0}
+          genericItems={genericProducts?.length || 0}
+          incomingGenericItems={upcomingGenericProducts?.length || 0}
         />
         <ProductsGrid 
-          products={products || []}
-          upcomingProducts={upcomingProducts || []}
+          products={products}
+          upcomingProducts={upcomingProducts}
+          genericProducts={genericProducts || []}
+          upcomingGenericProducts={upcomingGenericProducts || []}
         />
         <ContactFooter />
       </div>

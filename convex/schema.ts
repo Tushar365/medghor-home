@@ -12,4 +12,16 @@ export default defineSchema({
     name: v.string(),
     expectedDate: v.number(), // Unix timestamp
   }),
+
+  // Generic products table
+  genericProducts: defineTable({
+    name: v.string(),
+  }),
+
+  // Upcoming Generic products table
+  upcomingGenericProducts: defineTable({
+    name: v.string(),
+    expectedDate: v.number(), // Unix timestamp
+  }),
 });
+
