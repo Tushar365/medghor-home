@@ -1,8 +1,10 @@
 "use client";
 
 
-import Hero from "../components/Hero";
+import GodelSpaceFullpage from "../components/GodelSpaceFullPage";
 import Header from "../components/Header/Header";
+import Hero from "../components/Hero";
+import Footer from "../components/Footer/footer";
 // import Dashboard from "../components/Dashboard";
 
 export default function Home() {
@@ -10,6 +12,8 @@ export default function Home() {
     <>
       <Header />
       <Hero />
+      <GodelSpaceFullpage />
+      <Footer />
       {/* <Dashboard /> */}
     </>
   );
