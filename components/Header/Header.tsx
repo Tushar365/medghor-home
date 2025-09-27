@@ -102,8 +102,10 @@ const Header: React.FC = () => {
           <NavLink href="/office" onClick={closeMobileMenu}>
             Office +
           </NavLink>
+          <NavLink href="/about" onClick={closeMobileMenu}>
+            About Us +
+          </NavLink>
           {/* Uncomment when ready to use
-          <NavLink href="/about" onClick={closeMobileMenu}>About Us</NavLink>
           <NavLink href="/blog" onClick={closeMobileMenu}>Blog</NavLink>
           <NavLink href="/playground" onClick={closeMobileMenu}>Playground</NavLink>
           */}
