@@ -1,10 +1,12 @@
 @import "tailwindcss";
 
+/* Base color tokens */
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
+/* Tailwind v4 design tokens with @theme inline */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -12,6 +14,7 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* System dark mode */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -19,8 +22,45 @@
   }
 }
 
+/* Base page styles */
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Reveal row actions on touch devices that have no hover */
+@media (any-hover: none) {
+  .row-actions {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+}
+
+/* Hide actions by default and reveal on hover-capable devices */
+.list-row .row-actions {
+  transition: opacity 150ms ease, visibility 150ms ease;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Desktop/mouse: reveal actions on row hover and focus-within */
+@media (hover: hover) {
+  .list-row:hover .row-actions,
+  .list-row:focus-within .row-actions {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
+
+/* Safety: ensure buttons are tappable and above overlays on mobile */
+.row-actions button {
+  min-height: 44px;
+  min-width: 44px;
+  pointer-events: auto;
+  z-index: 10;
+  position: relative;
 }

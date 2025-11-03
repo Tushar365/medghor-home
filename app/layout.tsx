@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ConvexClientProvider from "@/components/ConvexClientProvider";
@@ -27,10 +28,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         {/* Start of OpenWidget (www.openwidget.com) code */}
-        <script
+        <Script
+          id="openwidget"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               window.__ow = window.__ow || {};

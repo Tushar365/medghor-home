@@ -15,30 +15,79 @@ import Modal from './components/Modal';
 import ProductForm from './components/ProductForm';
 import UpcomingProductForm from './components/UpcomingProductForm';
 
-// New Generic Product Components (you'll need to create these)
+// New Generic Product Components
 import GenericProductList from './components/GenericProductList';
 import UpcomingGenericProductsList from './components/UpcomingGenericProductsList';
 
 type ProductTab = 'branded' | 'generic';
+type AccentColor = 'blue' | 'green';
+
+/* Tailwind-safe class maps (avoid dynamic template strings) */
+const colorStyles: Record<
+  AccentColor,
+  {
+    navActive: string;
+    navInactive: string;
+    navBorder: string;
+    chipBg: string;
+    chipText: string;
+    btn: string;
+    icon: string;
+    headerBadge: string;
+  }
+> = {
+  blue: {
+    navActive: 'bg-blue-50 text-blue-700',
+    navInactive: 'text-gray-500 hover:text-gray-700 hover:bg-gray-50',
+    navBorder: 'border border-blue-200',
+    chipBg: 'bg-blue-100',
+    chipText: 'text-blue-700',
+    btn: 'bg-blue-600 hover:bg-blue-700',
+    icon: 'text-blue-600',
+    headerBadge: 'bg-blue-100',
+  },
+  green: {
+    navActive: 'bg-green-50 text-green-700',
+    navInactive: 'text-gray-500 hover:text-gray-700 hover:bg-gray-50',
+    navBorder: 'border border-green-200',
+    chipBg: 'bg-green-100',
+    chipText: 'text-green-700',
+    btn: 'bg-green-600 hover:bg-green-700',
+    icon: 'text-green-600',
+    headerBadge: 'bg-green-100',
+  },
+};
+
+/* Phone-safe date helpers (avoid ISO timezone shifts) */
+const toInputDateLocal = (ts: number) => {
+  const d = new Date(ts);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+};
+
+const parseDateInputLocal = (dateStr: string) => {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  return new Date(y, (m || 1) - 1, d || 1).getTime();
+};
 
 export default function EnhancedOfficePage() {
   // Authentication state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  
+
   // Tab state
   const [activeTab, setActiveTab] = useState<ProductTab>('branded');
 
   // Modal states for branded products
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [showAddUpcoming, setShowAddUpcoming] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Doc<"products"> | null>(null);
-  const [editingUpcoming, setEditingUpcoming] = useState<Doc<"upcomingProducts"> | null>(null);
+  const [editingProduct, setEditingProduct] = useState<Doc<'products'> | null>(null);
+  const [editingUpcoming, setEditingUpcoming] = useState<Doc<'upcomingProducts'> | null>(null);
 
   // Modal states for generic products
   const [showAddGenericProduct, setShowAddGenericProduct] = useState(false);
   const [showAddUpcomingGeneric, setShowAddUpcomingGeneric] = useState(false);
-  const [editingGenericProduct, setEditingGenericProduct] = useState<Doc<"genericProducts"> | null>(null);
-  const [editingUpcomingGeneric, setEditingUpcomingGeneric] = useState<Doc<"upcomingGenericProducts"> | null>(null);
+  const [editingGenericProduct, setEditingGenericProduct] = useState<Doc<'genericProducts'> | null>(null);
+  const [editingUpcomingGeneric, setEditingUpcomingGeneric] = useState<Doc<'upcomingGenericProducts'> | null>(null);
 
   // Check for existing session on mount
   useEffect(() => {
@@ -105,7 +154,7 @@ export default function EnhancedOfficePage() {
     }
   };
 
-  const handleDeleteProduct = async (id: Id<"products">) => {
+  const handleDeleteProduct = async (id: Id<'products'>) => {
     if (window.confirm('Are you sure you want to delete this branded product?')) {
       try {
         await removeProduct({ id });
@@ -117,9 +166,9 @@ export default function EnhancedOfficePage() {
 
   const handleAddUpcoming = async (name: string, date: string) => {
     try {
-      await addUpcomingProduct({ 
-        name, 
-        expectedDate: new Date(date).getTime() 
+      await addUpcomingProduct({
+        name,
+        expectedDate: parseDateInputLocal(date),
       });
       setShowAddUpcoming(false);
     } catch (error) {
@@ -131,10 +180,10 @@ export default function EnhancedOfficePage() {
   const handleEditUpcoming = async (name: string, date: string) => {
     if (!editingUpcoming) return;
     try {
-      await editUpcomingProduct({ 
-        id: editingUpcoming._id, 
-        name, 
-        expectedDate: new Date(date).getTime() 
+      await editUpcomingProduct({
+        id: editingUpcoming._id,
+        name,
+        expectedDate: parseDateInputLocal(date),
       });
       setEditingUpcoming(null);
     } catch (error) {
@@ -143,7 +192,7 @@ export default function EnhancedOfficePage() {
     }
   };
 
-  const handleDeleteUpcoming = async (id: Id<"upcomingProducts">) => {
+  const handleDeleteUpcoming = async (id: Id<'upcomingProducts'>) => {
     if (window.confirm('Are you sure you want to delete this upcoming branded product?')) {
       try {
         await removeUpcomingProduct({ id });
@@ -175,7 +224,7 @@ export default function EnhancedOfficePage() {
     }
   };
 
-  const handleDeleteGenericProduct = async (id: Id<"genericProducts">) => {
+  const handleDeleteGenericProduct = async (id: Id<'genericProducts'>) => {
     if (window.confirm('Are you sure you want to delete this generic product?')) {
       try {
         await removeGenericProduct({ id });
@@ -187,9 +236,9 @@ export default function EnhancedOfficePage() {
 
   const handleAddUpcomingGeneric = async (name: string, date: string) => {
     try {
-      await addUpcomingGenericProduct({ 
-        name, 
-        expectedDate: new Date(date).getTime() 
+      await addUpcomingGenericProduct({
+        name,
+        expectedDate: parseDateInputLocal(date),
       });
       setShowAddUpcomingGeneric(false);
     } catch (error) {
@@ -201,10 +250,10 @@ export default function EnhancedOfficePage() {
   const handleEditUpcomingGeneric = async (name: string, date: string) => {
     if (!editingUpcomingGeneric) return;
     try {
-      await editUpcomingGenericProduct({ 
-        id: editingUpcomingGeneric._id, 
-        name, 
-        expectedDate: new Date(date).getTime() 
+      await editUpcomingGenericProduct({
+        id: editingUpcomingGeneric._id,
+        name,
+        expectedDate: parseDateInputLocal(date),
       });
       setEditingUpcomingGeneric(null);
     } catch (error) {
@@ -213,7 +262,7 @@ export default function EnhancedOfficePage() {
     }
   };
 
-  const handleDeleteUpcomingGeneric = async (id: Id<"upcomingGenericProducts">) => {
+  const handleDeleteUpcomingGeneric = async (id: Id<'upcomingGenericProducts'>) => {
     if (window.confirm('Are you sure you want to delete this upcoming generic product?')) {
       try {
         await removeUpcomingGenericProduct({ id });
@@ -224,19 +273,19 @@ export default function EnhancedOfficePage() {
   };
 
   // Edit handlers
-  const startEditingProduct = (product: Doc<"products">) => {
+  const startEditingProduct = (product: Doc<'products'>) => {
     setEditingProduct(product);
   };
 
-  const startEditingUpcoming = (product: Doc<"upcomingProducts">) => {
+  const startEditingUpcoming = (product: Doc<'upcomingProducts'>) => {
     setEditingUpcoming(product);
   };
 
-  const startEditingGenericProduct = (product: Doc<"genericProducts">) => {
+  const startEditingGenericProduct = (product: Doc<'genericProducts'>) => {
     setEditingGenericProduct(product);
   };
 
-  const startEditingUpcomingGeneric = (product: Doc<"upcomingGenericProducts">) => {
+  const startEditingUpcomingGeneric = (product: Doc<'upcomingGenericProducts'>) => {
     setEditingUpcomingGeneric(product);
   };
 
@@ -257,7 +306,7 @@ export default function EnhancedOfficePage() {
     return new Date(timestamp).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
@@ -276,16 +325,16 @@ export default function EnhancedOfficePage() {
       id: 'branded' as ProductTab,
       label: 'Branded Products',
       icon: Package,
-      color: 'blue',
-      count: products.length + upcomingProducts.length
+      color: 'blue' as AccentColor,
+      count: products.length + upcomingProducts.length,
     },
     {
       id: 'generic' as ProductTab,
-      label: 'Generic Products', 
+      label: 'Generic Products',
       icon: Shield,
-      color: 'green',
-      count: genericProducts.length + upcomingGenericProducts.length
-    }
+      color: 'green' as AccentColor,
+      count: genericProducts.length + upcomingGenericProducts.length,
+    },
   ];
 
   // Show login if not authenticated
@@ -293,10 +342,13 @@ export default function EnhancedOfficePage() {
     return <Login onLoginAction={handleLogin} />;
   }
 
+  const activeAccent: AccentColor = activeTab === 'branded' ? 'blue' : 'green';
+  const accent = colorStyles[activeAccent];
+
   return (
     <div className="min-h-screen bg-gray-50">
       <DashboardHeader onLogoutAction={handleLogout} />
-      
+
       <div className="max-w-6xl mx-auto px-6 pb-8">
         {/* Tab Navigation */}
         <div className="mb-8">
@@ -305,23 +357,23 @@ export default function EnhancedOfficePage() {
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
+                const styles = colorStyles[tab.color];
                 return (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center space-x-2 px-4 py-3 rounded-md text-sm font-medium transition-colors ${
-                      isActive
-                        ? `bg-${tab.color}-50 text-${tab.color}-700 border border-${tab.color}-200`
-                        : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                    aria-label={`Switch to ${tab.label}`}
+                    className={`flex items-center space-x-2 px-4 rounded-md text-sm font-medium transition-colors min-h-11 ${
+                      isActive ? `${styles.navActive} ${styles.navBorder}` : styles.navInactive
                     }`}
                   >
                     <Icon className="w-4 h-4" />
                     <span>{tab.label}</span>
-                    <span className={`px-2 py-1 text-xs rounded-full ${
-                      isActive
-                        ? `bg-${tab.color}-100 text-${tab.color}-700`
-                        : 'bg-gray-100 text-gray-600'
-                    }`}>
+                    <span
+                      className={`px-2 py-1 text-xs rounded-full ${
+                        isActive ? `${styles.chipBg} ${styles.chipText}` : 'bg-gray-100 text-gray-600'
+                      }`}
+                    >
                       {tab.count}
                     </span>
                   </button>
@@ -336,29 +388,26 @@ export default function EnhancedOfficePage() {
           <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
-                <div className={`${activeTab === 'branded' ? 'bg-blue-100' : 'bg-green-100'} p-2 rounded-lg`}>
+                <div className={`${accent.headerBadge} p-2 rounded-lg`}>
                   {activeTab === 'branded' ? (
-                    <Package className="w-6 h-6 text-blue-600" />
+                    <Package className={`w-6 h-6 ${accent.icon}`} />
                   ) : (
-                    <Shield className="w-6 h-6 text-green-600" />
+                    <Shield className={`w-6 h-6 ${accent.icon}`} />
                   )}
                 </div>
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900">
                     Current {activeTab === 'branded' ? 'Branded' : 'Generic'} Products
                   </h2>
-                  <p className="text-sm text-gray-500">
-                    {getCurrentProducts().length} products available
-                  </p>
+                  <p className="text-sm text-gray-500">{getCurrentProducts().length} products available</p>
                 </div>
               </div>
-              <button 
-                onClick={() => activeTab === 'branded' ? setShowAddProduct(true) : setShowAddGenericProduct(true)}
-                className={`flex items-center space-x-2 ${
-                  activeTab === 'branded' 
-                    ? 'bg-blue-600 hover:bg-blue-700' 
-                    : 'bg-green-600 hover:bg-green-700'
-                } text-white px-4 py-2 rounded-lg transition-colors`}
+              <button
+                onClick={() =>
+                  activeTab === 'branded' ? setShowAddProduct(true) : setShowAddGenericProduct(true)
+                }
+                aria-label="Add product"
+                className={`flex items-center space-x-2 ${accent.btn} text-white px-4 h-11 rounded-lg transition-colors`}
               >
                 <Plus className="w-4 h-4" />
                 <span>Add Product</span>
@@ -386,25 +435,22 @@ export default function EnhancedOfficePage() {
           <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
-                <div className={`${activeTab === 'branded' ? 'bg-blue-100' : 'bg-green-100'} p-2 rounded-lg`}>
-                  <Calendar className={`w-6 h-6 ${activeTab === 'branded' ? 'text-blue-600' : 'text-green-600'}`} />
+                <div className={`${accent.headerBadge} p-2 rounded-lg`}>
+                  <Calendar className={`w-6 h-6 ${accent.icon}`} />
                 </div>
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900">
                     Upcoming {activeTab === 'branded' ? 'Branded' : 'Generic'} Products
                   </h2>
-                  <p className="text-sm text-gray-500">
-                    {getCurrentUpcomingProducts().length} products scheduled
-                  </p>
+                  <p className="text-sm text-gray-500">{getCurrentUpcomingProducts().length} products scheduled</p>
                 </div>
               </div>
               <button
-                onClick={() => activeTab === 'branded' ? setShowAddUpcoming(true) : setShowAddUpcomingGeneric(true)}
-                className={`flex items-center space-x-2 ${
-                  activeTab === 'branded' 
-                    ? 'bg-blue-600 hover:bg-blue-700' 
-                    : 'bg-green-600 hover:bg-green-700'
-                } text-white px-4 py-2 rounded-lg transition-colors`}
+                onClick={() =>
+                  activeTab === 'branded' ? setShowAddUpcoming(true) : setShowAddUpcomingGeneric(true)
+                }
+                aria-label="Add upcoming product"
+                className={`flex items-center space-x-2 ${accent.btn} text-white px-4 h-11 rounded-lg transition-colors`}
               >
                 <Plus className="w-4 h-4" />
                 <span>Add Upcoming</span>
@@ -455,11 +501,7 @@ export default function EnhancedOfficePage() {
           />
         </Modal>
 
-        <Modal
-          isOpen={!!editingProduct}
-          onCloseAction={closeAllModals}
-          title="Edit Branded Product"
-        >
+        <Modal isOpen={!!editingProduct} onCloseAction={closeAllModals} title="Edit Branded Product">
           {editingProduct && (
             <ProductForm
               initialName={editingProduct.name}
@@ -479,7 +521,7 @@ export default function EnhancedOfficePage() {
           {editingUpcoming && (
             <UpcomingProductForm
               initialName={editingUpcoming.name}
-              initialDate={new Date(editingUpcoming.expectedDate).toISOString().split('T')[0]}
+              initialDate={toInputDateLocal(editingUpcoming.expectedDate)}
               onSubmitAction={handleEditUpcoming}
               onCancelAction={closeAllModals}
               submitLabel="Update Branded Product"
@@ -537,7 +579,7 @@ export default function EnhancedOfficePage() {
           {editingUpcomingGeneric && (
             <UpcomingProductForm
               initialName={editingUpcomingGeneric.name}
-              initialDate={new Date(editingUpcomingGeneric.expectedDate).toISOString().split('T')[0]}
+              initialDate={toInputDateLocal(editingUpcomingGeneric.expectedDate)}
               onSubmitAction={handleEditUpcomingGeneric}
               onCancelAction={closeAllModals}
               submitLabel="Update Generic Product"

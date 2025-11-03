@@ -102,7 +102,8 @@ export default function Login({ onLoginAction }: LoginProps) {
         </form>
 
         <div className="mt-6 text-center text-sm text-gray-500">
-         
+
+       
         </div>
       </div>
     </div>
